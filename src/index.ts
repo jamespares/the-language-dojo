@@ -68,7 +68,7 @@ app.get("/", async (c) => {
   return c.html(layout("Welcome", `
     <div class="hero">
       <h1>🥋 The Language Dojo</h1>
-      <p>master languages through high intensity, language hacking methods</p>
+      <p>There are no shortcuts. Step into the Dojo</p>
       <div class="auth-form">
         <div class="form-card" id="login-form">
           <h2>Login</h2>
