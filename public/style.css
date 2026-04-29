@@ -146,11 +146,8 @@ body {
   margin-bottom: 2rem;
 }
 
-.auth-forms {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  max-width: 600px;
+.auth-form {
+  max-width: 400px;
   margin: 0 auto;
 }
 
@@ -164,6 +161,22 @@ body {
 .form-card h2 {
   margin-bottom: 1rem;
   font-size: 1.3rem;
+}
+
+.auth-toggle {
+  margin-top: 1rem;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.auth-toggle a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.auth-toggle a:hover {
+  text-decoration: underline;
 }
 
 /* Dashboard */
@@ -476,8 +489,8 @@ body {
 
 /* Responsive */
 @media (max-width: 640px) {
-  .auth-forms {
-    grid-template-columns: 1fr;
+  .auth-form {
+    max-width: 100%;
   }
   
   .language-grid {

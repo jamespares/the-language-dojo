@@ -68,23 +68,25 @@ app.get("/", async (c) => {
   return c.html(layout("Welcome", `
     <div class="hero">
       <h1>🥋 The Language Dojo</h1>
-      <p>Master French through immersive, contextual practice.</p>
-      <div class="auth-forms">
-        <div class="form-card">
+      <p>master languages through high intensity, language hacking methods</p>
+      <div class="auth-form">
+        <div class="form-card" id="login-form">
           <h2>Login</h2>
           <form method="post" action="/auth/login">
             <input type="text" name="username" placeholder="Username" required class="input" />
             <input type="password" name="password" placeholder="Password" required class="input" />
             <button type="submit" class="btn btn-primary">Login</button>
           </form>
+          <p class="auth-toggle">Don't have an account? <a href="#" onclick="document.getElementById('login-form').style.display='none';document.getElementById('register-form').style.display='block';return false;">Register</a></p>
         </div>
-        <div class="form-card">
+        <div class="form-card" id="register-form" style="display:none">
           <h2>Register</h2>
           <form method="post" action="/auth/register">
             <input type="text" name="username" placeholder="Username" required class="input" />
             <input type="password" name="password" placeholder="Password" required class="input" />
             <button type="submit" class="btn btn-secondary">Register</button>
           </form>
+          <p class="auth-toggle">Already have an account? <a href="#" onclick="document.getElementById('register-form').style.display='none';document.getElementById('login-form').style.display='block';return false;">Login</a></p>
         </div>
       </div>
     </div>
