@@ -1,0 +1,124 @@
+import { Hono } from "hono";
+import { getDb } from "../db/client";
+import { nouns } from "../content/nouns";
+import { gameLayout } from "../lib/html";
+import { recordAnswer, getMistakeItemIds } from "../lib/game";
+import type { Env } from "../index";
+
+const app = new Hono<Env>();
+
+// Mode selection
+app.get("/", async (c) => {
+  const user = c.get("user");
+  if (!user) return c.redirect("/");
+
+  return c.html(gameLayout("Noun Gender", `
+    <div class="mode-selection">
+      <p class="instructions">Choose your training mode:</p>
+      <div class="modes">
+        <a href="/french/nouns/play?mode=regular" class="mode-btn">
+          <h3>Regular Nouns</h3>
+          <p>Nouns that follow the gender suffix rules</p>
+        </a>
+        <a href="/french/nouns/play?mode=exceptions" class="mode-btn">
+          <h3>Exceptions</h3>
+          <p>The most commonly mistaken nouns</p>
+        </a>
+        <a href="/french/nouns/play?mode=review" class="mode-btn">
+          <h3>Review Mistakes</h3>
+          <p>Items you need to review (must get right twice)</p>
+        </a>
+      </div>
+    </div>
+  `, user));
+});
+
+// Play game
+app.get("/play", async (c) => {
+  const user = c.get("user");
+  if (!user) return c.redirect("/");
+
+  const mode = c.req.query("mode") || "regular";
+  const index = parseInt(c.req.query("index") || "0", 10);
+
+  let pool = nouns;
+  if (mode === "regular") pool = nouns.filter(n => n.type === "regular");
+  else if (mode === "exceptions") pool = nouns.filter(n => n.type === "exception");
+  else if (mode === "review") {
+    const db = getDb(c.env.DB);
+    const mistakeIds = await getMistakeItemIds(db, user.id, "nouns");
+    pool = nouns.filter(n => mistakeIds.includes(n.id));
+    if (pool.length === 0) {
+      return c.html(gameLayout("Noun Gender", `
+        <div class="game-complete">
+          <h2>🎉 No mistakes to review!</h2>
+          <p>You've cleared all your review items. Great job!</p>
+          <a href="/french/nouns" class="btn btn-primary">Back to Modes</a>
+        </div>
+      `, user));
+    }
+  }
+
+  // Shuffle pool deterministically for the session using user id
+  const seed = user.id + (mode === "regular" ? 1 : mode === "exceptions" ? 2 : 3);
+  const shuffled = [...pool].sort((a, b) => {
+    const hashA = (a.id.charCodeAt(0) * seed) % 1000;
+    const hashB = (b.id.charCodeAt(0) * seed) % 1000;
+    return hashA - hashB;
+  });
+
+  const item = shuffled[index % shuffled.length];
+  const total = shuffled.length;
+
+  return c.html(gameLayout("Noun Gender", `
+    <div class="game-progress">Question ${index + 1} of ${total} — Mode: ${mode}</div>
+    <div class="question-card">
+      <h2 class="noun">${item.noun}</h2>
+      <p class="prompt">Which phrase is correct?</p>
+      <form method="post" action="/french/nouns/answer" class="options">
+        ${item.options.map((opt, i) => `
+          <button type="submit" name="answer" value="${opt}" class="option-btn">
+            ${opt}
+          </button>
+        `).join("")}
+        <input type="hidden" name="itemId" value="${item.id}" />
+        <input type="hidden" name="mode" value="${mode}" />
+        <input type="hidden" name="index" value="${index}" />
+      </form>
+    </div>
+  `, user));
+});
+
+// Submit answer
+app.post("/answer", async (c) => {
+  const user = c.get("user");
+  if (!user) return c.redirect("/");
+
+  const body = await c.req.parseBody();
+  const itemId = String(body.itemId);
+  const answer = String(body.answer);
+  const mode = String(body.mode);
+  const index = parseInt(String(body.index), 10);
+
+  const item = nouns.find(n => n.id === itemId);
+  if (!item) return c.redirect("/french/nouns");
+
+  const correct = answer === item.phrase;
+  const db = getDb(c.env.DB);
+  await recordAnswer(db, user.id, "nouns", itemId, correct);
+
+  return c.html(gameLayout("Noun Gender", `
+    <div class="feedback ${correct ? "correct" : "incorrect"}">
+      <div class="feedback-icon">${correct ? "✅" : "❌"}</div>
+      <h2>${correct ? "Correct!" : "Not quite"}</h2>
+      <p class="the-phrase">${item.phrase}</p>
+      <p class="gender-tag">${item.gender === "m" ? "Masculine" : "Feminine"} — ${item.type === "regular" ? "Regular" : "Exception"}</p>
+      <div class="actions">
+        <a href="/french/nouns/play?mode=${mode}&index=${index + 1}" class="btn btn-primary">Next Question →</a>
+        <a href="/french/nouns" class="btn btn-secondary">Change Mode</a>
+      </div>
+    </div>
+  `, user));
+});
+
+export default app;
