@@ -113,6 +113,9 @@ app.post("/answer", async (c) => {
       <h2>${correct ? "Correct!" : "Not quite"}</h2>
       <p class="the-phrase">${item.phrase}</p>
       <p class="gender-tag">${item.gender === "m" ? "Masculine" : "Feminine"} — ${item.type === "regular" ? "Regular" : "Exception"}</p>
+      <div class="rule-box">
+        <strong>Rule:</strong> ${item.rule}
+      </div>
       <div class="actions">
         <a href="/french/nouns/play?mode=${mode}&index=${index + 1}" class="btn btn-primary">Next Question →</a>
         <a href="/french/nouns" class="btn btn-secondary">Change Mode</a>
