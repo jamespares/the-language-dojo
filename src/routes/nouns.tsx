@@ -3,7 +3,7 @@ import { Hono } from "hono";
 import { getDb } from "../db/client";
 import { nouns } from "../content/nouns";
 import { GameLayout } from "../components/Layout";
-import { recordAnswer, getMistakeItemIds } from "../lib/game";
+import { recordAnswer, getMistakeItemIds, seededShuffle, shuffleArray } from "../lib/game";
 import type { AppUser } from "../lib/auth";
 
 const app = new Hono<{ Bindings: CloudflareBindings; Variables: { user: AppUser } }>();
@@ -65,11 +65,7 @@ app.get("/play", async (c) => {
   }
 
   const seed = user.id + (mode === "regular" ? 1 : mode === "exceptions" ? 2 : 3);
-  const shuffled = [...pool].sort((a, b) => {
-    const hashA = (a.id.charCodeAt(0) * seed) % 1000;
-    const hashB = (b.id.charCodeAt(0) * seed) % 1000;
-    return hashA - hashB;
-  });
+  const shuffled = seededShuffle(pool, seed);
 
   const item = shuffled[index % shuffled.length];
   const total = shuffled.length;
@@ -83,7 +79,7 @@ app.get("/play", async (c) => {
         <h2 class="noun">{item.noun}</h2>
         <p class="prompt">Which phrase is correct?</p>
         <form method="post" action="/french/nouns/answer" class="options">
-          {item.options.map((opt) => (
+          {shuffleArray(item.options).map((opt) => (
             <button type="submit" name="answer" value={opt} class="option-btn">
               {opt}
             </button>

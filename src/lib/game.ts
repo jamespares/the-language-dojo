@@ -90,6 +90,29 @@ export async function getMistakeItemIds(db: Db, userId: number, module: string):
   return items.filter(m => m.reviewCount < 2).map(m => m.itemId);
 }
 
+export function seededShuffle<T>(arr: readonly T[], seed: number): T[] {
+  const result = [...arr];
+  let s = seed;
+  const next = () => {
+    s = (s * 9301 + 49297) % 233280;
+    return s / 233280;
+  };
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(next() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+
+export function shuffleArray<T>(arr: readonly T[]): T[] {
+  const result = [...arr];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+
 export async function getStats(db: Db, userId: number, module: string) {
   const progress = await db
     .select()

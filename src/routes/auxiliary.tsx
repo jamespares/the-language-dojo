@@ -3,7 +3,7 @@ import { Hono } from "hono";
 import { getDb } from "../db/client";
 import { auxiliaryItems } from "../content/auxiliary";
 import { GameLayout } from "../components/Layout";
-import { recordAnswer } from "../lib/game";
+import { recordAnswer, seededShuffle, shuffleArray } from "../lib/game";
 import type { AppUser } from "../lib/auth";
 
 const app = new Hono<{ Bindings: CloudflareBindings; Variables: { user: AppUser } }>();
@@ -14,11 +14,7 @@ app.get("/", async (c) => {
 
   const index = parseInt(c.req.query("index") || "0", 10);
   const seed = user.id + 400;
-  const shuffled = [...auxiliaryItems].sort((a, b) => {
-    const hashA = (a.id.charCodeAt(0) * seed) % 1000;
-    const hashB = (b.id.charCodeAt(0) * seed) % 1000;
-    return hashA - hashB;
-  });
+  const shuffled = seededShuffle(auxiliaryItems, seed);
 
   const item = shuffled[index % shuffled.length];
   const total = shuffled.length;
@@ -31,7 +27,7 @@ app.get("/", async (c) => {
         <p class="context">{item.context}</p>
         <p class="prompt">Which sentence is correct?</p>
         <form method="post" action="/french/auxiliary/answer" class="options">
-          {item.options.map((opt) => (
+          {shuffleArray(item.options).map((opt) => (
             <button type="submit" name="answer" value={opt} class="option-btn sentence-option">
               {opt}
             </button>
