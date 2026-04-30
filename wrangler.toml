@@ -15,4 +15,7 @@ send_email = [
 SESSION_SECRET = "change-this-in-production"
 BETTER_AUTH_URL = "https://the-language-dojo.pages.dev"
 
+[assets]
+directory = "./public"
+
 # BETTER_AUTH_SECRET should be set via: wrangler secret put BETTER_AUTH_SECRET
