@@ -154,6 +154,7 @@ SESSION_SECRET = "change-this-in-production"
 
 - `DB` is the D1 binding injected into `c.env.DB` at runtime.
 - `SESSION_SECRET` is injected into `c.env.SESSION_SECRET` but is **not currently consumed** by the auth code.
+- `send_email` binding is configured in `wrangler.toml`. All emails send from `hey@jamespares.me`.
 
 ### `drizzle.config.ts`
 - Schema path: `./src/db/schema.ts`

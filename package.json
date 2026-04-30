@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "better-auth": "^1.1.1",
     "drizzle-orm": "^0.30.0",
     "hono": "^4.3.0"
   },

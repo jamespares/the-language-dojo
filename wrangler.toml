@@ -1,5 +1,5 @@
 name = "the-language-dojo"
-main = "src/index.ts"
+main = "src/index.tsx"
 compatibility_date = "2024-04-29"
 
 [[d1_databases]]
@@ -9,3 +9,6 @@ database_id = "a4750795-88e2-4616-92bd-6ea3c8ff9887"
 
 [vars]
 SESSION_SECRET = "change-this-in-production"
+BETTER_AUTH_URL = "https://the-language-dojo.pages.dev"
+
+# BETTER_AUTH_SECRET should be set via: wrangler secret put BETTER_AUTH_SECRET

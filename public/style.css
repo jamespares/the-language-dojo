@@ -1,20 +1,34 @@
-/* The Language Dojo — Styles */
+/* The Language Dojo — Design System Styles */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lexend:wght@500;600;700&family=Patrick+Hand&display=swap');
 
 :root {
-  --primary: #4f46e5;
-  --primary-dark: #4338ca;
-  --secondary: #06b6d4;
-  --accent: #f59e0b;
+  --base-bg: #fafaf9;
+  --base-surface: #ffffff;
+  --base-text: #1c1917;
+  --base-text-secondary: #78716c;
+  --base-text-muted: #a8a29e;
+  --base-border: #e7e5e4;
+  --base-link: #2563eb;
+
+  --accent: #4f46e5;
+  --accent-dark: #4338ca;
+  --accent-light: #6366f1;
+  --accent-bg: #eef2ff;
+  --accent-bg-light: #f5f3ff;
+
   --success: #10b981;
   --danger: #ef4444;
-  --bg: #0f172a;
-  --bg-card: #1e293b;
-  --bg-hover: #334155;
-  --text: #f1f5f9;
-  --text-muted: #94a3b8;
-  --border: #334155;
+  --warning: #f59e0b;
+
+  --font-heading: 'Lexend', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-accent: 'Patrick Hand', cursive;
+
   --radius: 12px;
-  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  --radius-sm: 8px;
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
 }
 
 * {
@@ -24,11 +38,12 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  background: var(--bg);
-  color: var(--text);
+  font-family: var(--font-body);
+  background: var(--base-bg);
+  color: var(--base-text);
   line-height: 1.6;
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* Navbar */
@@ -37,26 +52,25 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  background: var(--bg-card);
-  border-bottom: 1px solid var(--border);
+  background: var(--base-surface);
+  border-bottom: 1px solid var(--base-border);
+  box-shadow: var(--shadow);
 }
 
 .brand {
   font-size: 1.4rem;
   font-weight: 700;
-  color: var(--text);
+  color: var(--base-text);
   text-decoration: none;
+  font-family: var(--font-heading);
 }
 
 .nav-user {
   display: flex;
   align-items: center;
   gap: 1rem;
-  color: var(--text-muted);
-}
-
-.logout-form {
-  display: inline;
+  color: var(--base-text-secondary);
+  font-size: 0.9rem;
 }
 
 /* Container */
@@ -77,39 +91,45 @@ body {
   cursor: pointer;
   text-decoration: none;
   transition: all 0.2s;
+  font-family: var(--font-body);
 }
 
 .btn-primary {
-  background: var(--primary);
+  background: var(--accent);
   color: white;
 }
 
 .btn-primary:hover {
-  background: var(--primary-dark);
+  background: var(--accent-dark);
 }
 
 .btn-secondary {
-  background: var(--bg-hover);
-  color: var(--text);
+  background: var(--base-surface);
+  color: var(--base-text);
+  border: 1px solid var(--base-border);
 }
 
 .btn-secondary:hover {
-  background: var(--border);
+  background: var(--base-bg);
+  border-color: var(--base-text-muted);
 }
 
 .btn-small {
   padding: 0.4rem 0.8rem;
   font-size: 0.85rem;
-  background: var(--bg-hover);
-  color: var(--text-muted);
-  border: 1px solid var(--border);
-  border-radius: 6px;
+  background: var(--base-surface);
+  color: var(--base-text-secondary);
+  border: 1px solid var(--base-border);
+  border-radius: var(--radius-sm);
   cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
 }
 
 .btn-small:hover {
   background: var(--danger);
   color: white;
+  border-color: var(--danger);
 }
 
 /* Inputs */
@@ -117,16 +137,18 @@ body {
   width: 100%;
   padding: 0.75rem 1rem;
   margin-bottom: 1rem;
-  background: var(--bg);
-  border: 1px solid var(--border);
+  background: var(--base-surface);
+  border: 1px solid var(--base-border);
   border-radius: var(--radius);
-  color: var(--text);
+  color: var(--base-text);
   font-size: 1rem;
+  font-family: var(--font-body);
 }
 
 .input:focus {
   outline: none;
-  border-color: var(--primary);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
 
 /* Hero / Landing */
@@ -138,10 +160,11 @@ body {
 .hero h1 {
   font-size: 2.5rem;
   margin-bottom: 0.5rem;
+  font-family: var(--font-heading);
 }
 
 .hero p {
-  color: var(--text-muted);
+  color: var(--base-text-secondary);
   font-size: 1.2rem;
   margin-bottom: 2rem;
 }
@@ -152,31 +175,49 @@ body {
 }
 
 .form-card {
-  background: var(--bg-card);
+  background: var(--base-surface);
   padding: 2rem;
   border-radius: var(--radius);
-  border: 1px solid var(--border);
+  border: 1px solid var(--base-border);
+  box-shadow: var(--shadow);
 }
 
 .form-card h2 {
   margin-bottom: 1rem;
   font-size: 1.3rem;
+  font-family: var(--font-heading);
 }
 
 .auth-toggle {
   margin-top: 1rem;
   text-align: center;
-  color: var(--text-muted);
+  color: var(--base-text-secondary);
   font-size: 0.9rem;
 }
 
 .auth-toggle a {
-  color: var(--primary);
+  color: var(--accent);
   text-decoration: none;
+  font-weight: 600;
 }
 
 .auth-toggle a:hover {
   text-decoration: underline;
+}
+
+/* Error box */
+.error-box {
+  background: #fef2f2;
+  color: #991b1b;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  border: 1px solid #fecaca;
+}
+
+.hidden {
+  display: none !important;
 }
 
 /* Dashboard */
@@ -188,10 +229,11 @@ body {
 .dashboard h1 {
   font-size: 2rem;
   margin-bottom: 0.5rem;
+  font-family: var(--font-heading);
 }
 
 .subtitle {
-  color: var(--text-muted);
+  color: var(--base-text-secondary);
   margin-bottom: 2rem;
 }
 
@@ -204,18 +246,20 @@ body {
 }
 
 .language-card {
-  background: var(--bg-card);
+  background: var(--base-surface);
   padding: 2rem;
   border-radius: var(--radius);
-  border: 1px solid var(--border);
+  border: 1px solid var(--base-border);
   text-decoration: none;
-  color: var(--text);
+  color: var(--base-text);
   transition: all 0.2s;
+  box-shadow: var(--shadow);
 }
 
 .language-card:hover:not(.disabled) {
-  border-color: var(--primary);
+  border-color: var(--accent);
   transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
 }
 
 .language-card.disabled {
@@ -231,10 +275,11 @@ body {
 .language-card h2 {
   font-size: 1.3rem;
   margin-bottom: 0.3rem;
+  font-family: var(--font-heading);
 }
 
 .language-card p {
-  color: var(--text-muted);
+  color: var(--base-text-secondary);
   font-size: 0.9rem;
 }
 
@@ -247,6 +292,7 @@ body {
   text-align: center;
   margin-bottom: 2rem;
   font-size: 1.8rem;
+  font-family: var(--font-heading);
 }
 
 .modules {
@@ -256,18 +302,20 @@ body {
 }
 
 .module-card {
-  background: var(--bg-card);
+  background: var(--base-surface);
   padding: 1.5rem;
   border-radius: var(--radius);
-  border: 1px solid var(--border);
+  border: 1px solid var(--base-border);
   text-decoration: none;
-  color: var(--text);
+  color: var(--base-text);
   transition: all 0.2s;
+  box-shadow: var(--shadow);
 }
 
 .module-card:hover {
-  border-color: var(--primary);
+  border-color: var(--accent);
   transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
 }
 
 .module-icon {
@@ -278,10 +326,11 @@ body {
 .module-card h2 {
   font-size: 1.2rem;
   margin-bottom: 0.5rem;
+  font-family: var(--font-heading);
 }
 
 .module-card p {
-  color: var(--text-muted);
+  color: var(--base-text-secondary);
   font-size: 0.9rem;
   line-height: 1.5;
 }
@@ -292,7 +341,7 @@ body {
 }
 
 .back-link {
-  color: var(--text-muted);
+  color: var(--base-text-secondary);
   text-decoration: none;
   font-size: 0.9rem;
   display: inline-block;
@@ -300,11 +349,12 @@ body {
 }
 
 .back-link:hover {
-  color: var(--text);
+  color: var(--base-text);
 }
 
 .game-header h1 {
   font-size: 1.5rem;
+  font-family: var(--font-heading);
 }
 
 /* Mode Selection */
@@ -313,7 +363,7 @@ body {
 }
 
 .instructions {
-  color: var(--text-muted);
+  color: var(--base-text-secondary);
   margin-bottom: 1.5rem;
 }
 
@@ -324,45 +374,49 @@ body {
 }
 
 .mode-btn {
-  background: var(--bg-card);
+  background: var(--base-surface);
   padding: 1.5rem;
   border-radius: var(--radius);
-  border: 1px solid var(--border);
+  border: 1px solid var(--base-border);
   text-decoration: none;
-  color: var(--text);
+  color: var(--base-text);
   transition: all 0.2s;
+  box-shadow: var(--shadow);
 }
 
 .mode-btn:hover {
-  border-color: var(--primary);
+  border-color: var(--accent);
   transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
 }
 
 .mode-btn h3 {
   font-size: 1.1rem;
   margin-bottom: 0.3rem;
+  font-family: var(--font-heading);
 }
 
 .mode-btn p {
-  color: var(--text-muted);
+  color: var(--base-text-secondary);
   font-size: 0.85rem;
 }
 
 /* Game Progress */
 .game-progress {
   text-align: center;
-  color: var(--text-muted);
+  color: var(--base-text-secondary);
   font-size: 0.9rem;
   margin-bottom: 1rem;
 }
 
 /* Question Card */
 .question-card {
-  background: var(--bg-card);
+  background: var(--base-surface);
   padding: 2rem;
   border-radius: var(--radius);
-  border: 1px solid var(--border);
+  border: 1px solid var(--base-border);
   text-align: center;
+  box-shadow: var(--shadow);
 }
 
 .noun, .verb, .starter {
@@ -370,17 +424,18 @@ body {
   font-weight: 700;
   margin-bottom: 0.5rem;
   color: var(--accent);
+  font-family: var(--font-heading);
 }
 
 .context {
-  color: var(--text-muted);
+  color: var(--base-text-secondary);
   font-size: 1.1rem;
   margin-bottom: 1rem;
   font-style: italic;
 }
 
 .prompt {
-  color: var(--text-muted);
+  color: var(--base-text-secondary);
   margin-bottom: 1.5rem;
 }
 
@@ -392,19 +447,20 @@ body {
 
 .option-btn {
   padding: 1rem 1.5rem;
-  background: var(--bg);
-  border: 2px solid var(--border);
+  background: var(--base-bg);
+  border: 2px solid var(--base-border);
   border-radius: var(--radius);
-  color: var(--text);
+  color: var(--base-text);
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.2s;
   text-align: left;
+  font-family: var(--font-body);
 }
 
 .option-btn:hover {
-  border-color: var(--primary);
-  background: var(--bg-hover);
+  border-color: var(--accent);
+  background: var(--accent-bg);
 }
 
 .sentence-option {
@@ -416,9 +472,10 @@ body {
 .feedback {
   text-align: center;
   padding: 3rem 2rem;
-  background: var(--bg-card);
+  background: var(--base-surface);
   border-radius: var(--radius);
-  border: 1px solid var(--border);
+  border: 1px solid var(--base-border);
+  box-shadow: var(--shadow);
 }
 
 .feedback.correct {
@@ -437,44 +494,45 @@ body {
 .feedback h2 {
   font-size: 1.8rem;
   margin-bottom: 1rem;
+  font-family: var(--font-heading);
 }
 
 .feedback.correct h2 {
-  color: var(--success);
+  color: #047857;
 }
 
 .feedback.incorrect h2 {
-  color: var(--danger);
+  color: #b91c1c;
 }
 
 .the-phrase {
   font-size: 1.3rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
-  color: var(--text);
+  color: var(--base-text);
 }
 
 .gender-tag, .category-tag {
-  color: var(--text-muted);
+  color: var(--base-text-secondary);
   font-size: 0.9rem;
   text-transform: capitalize;
   margin-bottom: 1rem;
 }
 
 .rule-box {
-  background: var(--bg);
-  border-left: 4px solid var(--accent);
+  background: var(--base-bg);
+  border-left: 4px solid var(--warning);
   padding: 1rem 1.25rem;
   border-radius: 0 var(--radius) var(--radius) 0;
   margin-bottom: 1.5rem;
   text-align: left;
   font-size: 1rem;
   line-height: 1.5;
-  color: var(--text);
+  color: var(--base-text);
 }
 
 .rule-box strong {
-  color: var(--accent);
+  color: #b45309;
 }
 
 .actions {
@@ -488,18 +546,20 @@ body {
 .game-complete {
   text-align: center;
   padding: 3rem;
-  background: var(--bg-card);
+  background: var(--base-surface);
   border-radius: var(--radius);
-  border: 1px solid var(--border);
+  border: 1px solid var(--base-border);
+  box-shadow: var(--shadow);
 }
 
 .game-complete h2 {
   font-size: 1.8rem;
   margin-bottom: 1rem;
+  font-family: var(--font-heading);
 }
 
 .game-complete p {
-  color: var(--text-muted);
+  color: var(--base-text-secondary);
   margin-bottom: 1.5rem;
 }
 
@@ -508,27 +568,27 @@ body {
   .auth-form {
     max-width: 100%;
   }
-  
+
   .language-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .modules {
     grid-template-columns: 1fr;
   }
-  
+
   .container {
     padding: 1rem;
   }
-  
+
   .navbar {
     padding: 1rem;
   }
-  
+
   .hero h1 {
     font-size: 1.8rem;
   }
-  
+
   .noun, .verb, .starter {
     font-size: 1.5rem;
   }
