@@ -1,6 +1,6 @@
 export const css = `/* The Language Dojo — Design System Styles */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lexend:wght@500;600;700&family=Patrick+Hand&family=Quicksand:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lexend:wght@500;600;700&family=Patrick+Hand&display=swap');
 
 :root {
   --base-bg: #fafaf9;
@@ -24,7 +24,6 @@ export const css = `/* The Language Dojo — Design System Styles */
   --font-heading: 'Lexend', sans-serif;
   --font-body: 'Inter', sans-serif;
   --font-accent: 'Patrick Hand', cursive;
-  --font-fun: 'Patrick Hand', 'Quicksand', cursive;
 
   --radius: 12px;
   --radius-sm: 8px;

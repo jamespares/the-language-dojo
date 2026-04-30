@@ -3,27 +3,24 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "npm run build:css && wrangler dev",
-    "deploy": "npm run build:css && wrangler deploy",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
     "build": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "wrangler d1 migrations apply language-dojo-db",
-    "db:studio": "drizzle-kit studio",
-    "build:css": "npx tailwindcss -i ./src/styles/input.css -o ./public/tailwind.css"
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "better-auth": "^1.1.1",
     "drizzle-orm": "^0.30.0",
-    "hono": "^4.3.0",
-    "@jamespares/ui": "workspace:*"
+    "hono": "^4.3.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240423.0",
     "@types/bcryptjs": "^2.4.6",
     "drizzle-kit": "^0.20.0",
     "typescript": "^5.4.0",
-    "wrangler": "^3.50.0",
-    "tailwindcss": "^4.0.0"
+    "wrangler": "^3.50.0"
   }
 }
