@@ -50,57 +50,81 @@ app.get("/", async (c) => {
 
   return c.html(
     <Layout title="Welcome">
-      <div class="hero">
-        <h1>🥋 The Language Dojo</h1>
-        <p>There are no shortcuts. Step into the Dojo.</p>
+      <div class="auth-page">
         <div class="auth-form">
           <div class="form-card" id="login-card">
-            <h2>Sign In</h2>
-            <form id="login-form" class="flex flex-col gap-3">
-              <input type="email" id="login-email" class="input" placeholder="Email" required />
-              <input type="password" id="login-password" class="input" placeholder="Password" required />
+            <div class="auth-header">
+              <h1>Welcome Back</h1>
+              <p class="auth-subtitle">Sign in to your account</p>
+            </div>
+            <form id="login-form" class="auth-form-inner">
+              <label class="auth-label" for="login-email">Email</label>
+              <input type="email" id="login-email" class="input" placeholder="you@example.com" required />
+              <div class="auth-label-row">
+                <label class="auth-label" for="login-password">Password</label>
+                <a href="#" class="auth-forgot">Forgot password?</a>
+              </div>
+              <input type="password" id="login-password" class="input" placeholder="••••••••" required />
               <div id="login-error" class="hidden error-box"></div>
-              <button type="submit" id="login-btn" class="btn btn-primary">Sign In</button>
+              <button type="submit" id="login-btn" class="btn btn-primary btn-full">Sign In</button>
             </form>
+            <div class="auth-divider" />
+            <p class="auth-terms">
+              By signing in or creating an account, you agree to the{" "}
+              <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+            </p>
             <p class="auth-toggle">
               Don't have an account?{" "}
-              <a href="#" onclick="showRegister();return false;">Register</a>
+              <a href="#" onclick="showRegister();return false;">Sign up</a>
             </p>
-            <p class="auth-toggle" style="margin-top:0.5rem">
-              <a href="#" onclick="showLegacy();return false;" style="font-size:0.8rem;color:var(--base-text-muted)">
+            <p class="auth-toggle">
+              <a href="#" onclick="showLegacy();return false;" class="auth-legacy-link">
                 Legacy login (existing users)
               </a>
             </p>
           </div>
 
           <div class="form-card hidden" id="register-card">
-            <h2>Create Account</h2>
-            <form id="register-form" class="flex flex-col gap-3">
-              <input type="email" id="reg-email" class="input" placeholder="Email" required />
-              <input type="password" id="reg-password" class="input" placeholder="Password" required minlength={6} />
+            <div class="auth-header">
+              <h1>Create Account</h1>
+              <p class="auth-subtitle">Sign up to get started</p>
+            </div>
+            <form id="register-form" class="auth-form-inner">
+              <label class="auth-label" for="reg-email">Email</label>
+              <input type="email" id="reg-email" class="input" placeholder="you@example.com" required />
+              <label class="auth-label" for="reg-password">Password</label>
+              <input type="password" id="reg-password" class="input" placeholder="••••••••" required minlength={6} />
               <div id="reg-error" class="hidden error-box"></div>
-              <button type="submit" id="reg-btn" class="btn btn-primary">Create Account</button>
+              <button type="submit" id="reg-btn" class="btn btn-primary btn-full">Create Account</button>
             </form>
+            <div class="auth-divider" />
+            <p class="auth-terms">
+              By signing in or creating an account, you agree to the{" "}
+              <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+            </p>
             <p class="auth-toggle">
               Already have an account?{" "}
-              <a href="#" onclick="showLogin();return false;">Sign In</a>
+              <a href="#" onclick="showLogin();return false;">Sign in</a>
             </p>
           </div>
 
           <div class="form-card hidden" id="legacy-card">
-            <h2>Legacy Login</h2>
-            <form method="post" action="/auth/login" class="flex flex-col gap-3">
-              <input type="text" name="username" class="input" placeholder="Username" required />
-              <input type="password" name="password" class="input" placeholder="Password" required />
-              <button type="submit" class="btn btn-primary">Login</button>
+            <div class="auth-header">
+              <h1>Legacy Login</h1>
+              <p class="auth-subtitle">For existing username-based accounts</p>
+            </div>
+            <form method="post" action="/auth/login" class="auth-form-inner">
+              <label class="auth-label" for="legacy-username">Username</label>
+              <input type="text" id="legacy-username" name="username" class="input" placeholder="Username" required />
+              <label class="auth-label" for="legacy-password">Password</label>
+              <input type="password" id="legacy-password" name="password" class="input" placeholder="Password" required />
+              <button type="submit" class="btn btn-primary btn-full">Login</button>
             </form>
             <p class="auth-toggle">
               <a href="#" onclick="showLogin();return false;">Back to email login</a>
             </p>
           </div>
         </div>
-
-
       </div>
 
       <script type="module" dangerouslySetInnerHTML={{
