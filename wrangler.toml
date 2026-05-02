@@ -7,9 +7,8 @@ binding = "DB"
 database_name = "language-dojo-db"
 database_id = "a4750795-88e2-4616-92bd-6ea3c8ff9887"
 
-send_email = [
-  { name = "SEND_EMAIL" }
-]
+[[send_email]]
+name = "SEND_EMAIL"
 
 [vars]
 BETTER_AUTH_URL = "https://thelanguagedojo.com"

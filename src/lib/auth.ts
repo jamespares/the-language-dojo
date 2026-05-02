@@ -14,7 +14,7 @@ export type AppUser = {
 
 const authCache = new WeakMap<object, ReturnType<typeof betterAuth>>();
 
-export function createAuth(env: { DB: D1Database; BETTER_AUTH_SECRET: string; BETTER_AUTH_URL: string }) {
+export function createAuth(env: { DB: D1Database; BETTER_AUTH_SECRET: string; BETTER_AUTH_URL: string; SEND_EMAIL?: SendEmail }) {
   const cached = authCache.get(env);
   if (cached) return cached;
 
@@ -23,6 +23,54 @@ export function createAuth(env: { DB: D1Database; BETTER_AUTH_SECRET: string; BE
     emailAndPassword: {
       enabled: true,
       autoSignIn: true,
+      sendResetPassword: async ({ user, url }) => {
+        if (!env.SEND_EMAIL) {
+          console.warn("SEND_EMAIL binding is missing. Cannot send reset password email.");
+          return;
+        }
+
+        let EmailMessage: any;
+        try {
+          const mod = await import("cloudflare:email");
+          EmailMessage = mod.EmailMessage;
+        } catch {
+          console.warn("cloudflare:email module not available. Cannot send reset password email.");
+          return;
+        }
+
+        const boundary = "boundary-" + crypto.randomUUID();
+        const mimeMessage = [
+          `To: ${user.email}`,
+          `From: noreply@thelanguagedojo.com`,
+          `Subject: Reset your password`,
+          `MIME-Version: 1.0`,
+          `Content-Type: multipart/alternative; boundary="${boundary}"`,
+          ``,
+          `--${boundary}`,
+          `Content-Type: text/plain; charset="utf-8"`,
+          ``,
+          `Click the following link to reset your password: ${url}`,
+          ``,
+          `--${boundary}`,
+          `Content-Type: text/html; charset="utf-8"`,
+          ``,
+          `<p>Click <a href="${url}">here</a> to reset your password.</p>`,
+          ``,
+          `--${boundary}--`,
+        ].join("\r\n");
+
+        const msg = new EmailMessage(
+          "noreply@thelanguagedojo.com",
+          user.email,
+          mimeMessage
+        );
+
+        try {
+          await env.SEND_EMAIL.send(msg);
+        } catch (e: any) {
+          console.error("Failed to send reset password email:", e?.message);
+        }
+      },
     },
     secret: env.BETTER_AUTH_SECRET,
     baseURL: env.BETTER_AUTH_URL,
