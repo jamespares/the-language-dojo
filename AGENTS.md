@@ -76,7 +76,7 @@ No test runner, linter or formatter is currently configured.
 │   └── 0001_better_auth.sql  # Adds email column + better-auth tables (user, session, account, verification)
 ├── public/
 │   └── style.css             # Static CSS file (mirrors src/css.ts)
-├── wrangler.toml             # Worker config, D1 binding, env vars
+├── wrangler.jsonc            # Worker config, D1 binding, env vars
 ├── drizzle.config.ts         # Drizzle Kit configuration
 └── tsconfig.json             # TypeScript config (includes @cloudflare/workers-types)
 ```
@@ -117,7 +117,7 @@ Migration `0001_better_auth.sql` also creates `user`, `session`, `account`, and 
 ### Important Security Notes
 
 - `BETTER_AUTH_SECRET` must be set via `wrangler secret put BETTER_AUTH_SECRET` — do **not** commit secrets.
-- `SESSION_SECRET` in `wrangler.toml` is a leftover from the old legacy auth system and is **no longer consumed** by any code. It can be removed from `wrangler.toml` if desired.
+- `SESSION_SECRET` in `wrangler.jsonc` is a leftover from the old legacy auth system and is **no longer consumed** by any code. It can be removed from `wrangler.jsonc` if desired.
 
 ## Game Mechanics
 
@@ -144,7 +144,7 @@ All quiz data lives in `src/content/*.ts` as statically exported typed arrays. E
 
 ## Environment & Configuration
 
-### `wrangler.toml`
+### `wrangler.jsonc`
 ```toml
 name = "the-language-dojo"
 main = "src/index.tsx"
@@ -166,7 +166,7 @@ BETTER_AUTH_URL = "https://the-language-dojo.pages.dev"
 - `DB` is the D1 binding injected into `c.env.DB` at runtime.
 - `BETTER_AUTH_URL` is the public URL of the app (used by better-auth for callbacks).
 - `BETTER_AUTH_SECRET` should be set via `wrangler secret put BETTER_AUTH_SECRET`.
-- `send_email` binding is configured in `wrangler.toml`. All emails send from `hey@jamespares.me`.
+- `send_email` binding is configured in `wrangler.jsonc`. All emails send from `hey@jamespares.me`.
 
 ### `drizzle.config.ts`
 - Schema path: `./src/db/schema.ts`
@@ -186,5 +186,5 @@ The design is a light-themed card UI using CSS custom properties (`:root` variab
 - **No tests:** There is no test suite. If you add one, Jest/Vitest with `miniflare` or `wrangler` test environments are common choices for Workers projects.
 - **No linting/formatting:** ESLint and Prettier are not configured.
 - **Duplicate CSS:** `src/css.ts` and `public/style.css` contain the same styles. The app serves `src/css.ts` at runtime (`/style.css` route in `src/index.tsx`).
-- **Hardcoded D1 database ID:** The `database_id` in `wrangler.toml` is specific to the developer's Cloudflare account. New contributors will need to create their own D1 database and update the ID.
+- **Hardcoded D1 database ID:** The `database_id` in `wrangler.jsonc` is specific to the developer's Cloudflare account. New contributors will need to create their own D1 database and update the ID.
 - **Mistake review threshold:** The review mode filters items where `reviewCount < 2`. Changing this threshold requires updating both `src/lib/game.ts` (`getMistakeItemIds`) and any UI copy.

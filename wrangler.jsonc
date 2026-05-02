@@ -1,0 +1,21 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "the-language-dojo",
+  "main": "src/index.tsx",
+  "compatibility_date": "2024-04-29",
+  "vars": {
+    "BETTER_AUTH_URL": "https://thelanguagedojo.com"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "language-dojo-db",
+      "database_id": "a4750795-88e2-4616-92bd-6ea3c8ff9887"
+    }
+  ],
+  "send_email": [
+    {
+      "name": "SEND_EMAIL"
+    }
+  ]
+}

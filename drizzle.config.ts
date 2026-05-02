@@ -5,7 +5,7 @@ export default {
   out: "./migrations",
   driver: "d1",
   dbCredentials: {
-    wranglerConfigPath: "./wrangler.toml",
+    wranglerConfigPath: "./wrangler.jsonc",
     dbName: "language-dojo-db",
   },
 } satisfies Config;
