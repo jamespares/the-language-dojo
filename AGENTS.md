@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-The Language Dojo is a server-rendered French language learning web application. Users log in, choose French (Chinese is planned but not implemented), and practise grammar through multiple-choice quiz games. The app runs on Cloudflare Workers with a D1 SQLite database. All HTML is generated server-side using Hono's JSX renderer — there is no client-side JavaScript framework.
+The Language Dojo is a server-rendered language learning web application. Users log in and practise grammar through multiple-choice quiz games. French is live with 5 modules. Chinese and English are planned. The app runs on Cloudflare Workers with a D1 SQLite database. All HTML is generated server-side using Hono's JSX renderer — there is no client-side JavaScript framework.
 
 ### Available French Modules
 
@@ -21,8 +21,8 @@ The Language Dojo is a server-rendered French language learning web application.
 - **Database:** Cloudflare D1 (SQLite)
 - **ORM:** Drizzle ORM v0.30 + Drizzle Kit v0.20
 - **Language:** TypeScript 5.4 (target ES2022, module ESNext, bundler resolution)
-- **Auth:** bcryptjs for password hashing, custom base64 session tokens, HTTP-only cookies
-- **Styling:** Hand-written CSS, dark theme, served from `/style.css`
+- **Auth:** [better-auth](https://www.better-auth.com/) v1.1 — email & password only
+- **Styling:** Hand-written CSS, light theme, served from `/style.css`
 
 ## Build, Dev and Deploy Commands
 
@@ -47,18 +47,19 @@ No test runner, linter or formatter is currently configured.
 
 ```
 ├── src/
-│   ├── index.ts              # Entry point. Creates Hono app, auth middleware, mounts routes
+│   ├── index.tsx             # Entry point. Creates Hono app, auth middleware, mounts routes
 │   ├── css.ts                # Inline CSS string exported for /style.css endpoint
 │   ├── db/
 │   │   ├── client.ts         # `getDb(d1)` wrapper returning Drizzle client with schema
 │   │   └── schema.ts         # Drizzle table definitions (users, userProgress, mistakes)
 │   ├── lib/
-│   │   ├── auth.ts           # hashPassword, verifyPassword, createSessionToken, parseSessionToken
-│   │   ├── game.ts           # recordAnswer, getMistakeItemIds, getStats
-│   │   └── html.ts           # `layout()` and `gameLayout()` JSX helpers
+│   │   ├── auth.ts           # better-auth setup, getCurrentUser, logout, authMiddleware
+│   │   └── game.ts           # recordAnswer, getMistakeItemIds, getStats
+│   ├── components/
+│   │   └── Layout.tsx        # Shared page layout (navbar + footer)
 │   ├── routes/
-│   │   ├── auth.ts           # POST /login, /register, /logout
-│   │   ├── dashboard.ts      # Language selection (French / Chinese placeholder)
+│   │   ├── login.tsx         # Better-auth email sign-in / sign-up page
+│   │   ├── dashboard.ts      # Language selection (French / Chinese / English placeholder)
 │   │   ├── nouns.ts          # Noun gender game with mode selection & review
 │   │   ├── subjunctive.ts    # Subjunctive quiz
 │   │   ├── verbs.ts          # À vs De verb quiz
@@ -71,23 +72,25 @@ No test runner, linter or formatter is currently configured.
 │       ├── reflexive.ts      # ReflexiveItem dataset
 │       └── auxiliary.ts      # AuxiliaryItem dataset
 ├── migrations/
-│   └── 0000_init.sql         # D1 migration creating users, user_progress, mistakes
+│   ├── 0000_init.sql         # D1 migration creating users, user_progress, mistakes
+│   └── 0001_better_auth.sql  # Adds email column + better-auth tables (user, session, account, verification)
 ├── public/
 │   └── style.css             # Static CSS file (mirrors src/css.ts)
-├── wrangler.toml             # Worker config, D1 binding, SESSION_SECRET var
+├── wrangler.toml             # Worker config, D1 binding, env vars
 ├── drizzle.config.ts         # Drizzle Kit configuration
 └── tsconfig.json             # TypeScript config (includes @cloudflare/workers-types)
 ```
 
 ## Database Schema
 
-Three tables are defined in `src/db/schema.ts` and `migrations/0000_init.sql`:
-
 ### `users`
 - `id` — auto-increment primary key
 - `username` — unique, required
-- `password_hash` — bcrypt hash
+- `email` — optional, used to link to better-auth `user` table
+- `password_hash` — kept for schema compatibility; always empty string for better-auth users
 - `created_at` — timestamp
+
+This table acts as a **bridge** so that game progress (`user_progress`, `mistakes`) can continue to reference integer `user_id`s while better-auth manages its own `user` table with UUID text IDs.
 
 ### `user_progress`
 - Tracks every answer per user, module and content item.
@@ -100,17 +103,21 @@ Three tables are defined in `src/db/schema.ts` and `migrations/0000_init.sql`:
 - Unique constraint on `(user_id, module, item_id)`.
 - `review_count` must reach `2` before the item is considered cleared.
 
+### better-auth tables
+Migration `0001_better_auth.sql` also creates `user`, `session`, `account`, and `verification` tables managed by better-auth's Drizzle adapter.
+
 ## Authentication & Session Flow
 
-1. Registration hashes the password with bcrypt (10 rounds) and inserts a `users` row.
-2. On login or registration a session token is created: `base64(userId:timestamp)`.
-3. The token is stored in an HTTP-only cookie named `session` with `Secure`, `SameSite=Strict`, 7-day expiry.
-4. A global middleware (`src/index.ts`) reads the cookie on every request, decodes the token, and looks up the user in D1. The user object (or `null`) is stored in Hono's context variable `user`.
-5. Logout deletes the cookie.
+1. **better-auth** handles registration, login, password hashing, and session management via the `/api/auth/*` endpoints.
+2. The client-side auth form (`/login`) uses the better-auth CDN client to call `signIn.email()` and `signUp.email()`.
+3. A global middleware (`src/index.tsx`) reads the better-auth session cookie on every request, looks up the corresponding row in the app's `users` bridge table by email, and stores the result in Hono's context variable `user`.
+4. If a better-auth user has no bridge row, one is auto-created (`username` = email prefix, `passwordHash` = `""`).
+5. Logout deletes the better-auth session cookie and redirects home.
 
-### Important Security Note
+### Important Security Notes
 
-The session token is **not cryptographically signed** — it is plain base64. The comment in `src/lib/auth.ts` mentions a "Simple HMAC-like approach" but the implementation only uses `btoa(payload)`. The `SESSION_SECRET` defined in `wrangler.toml` is currently set to the hardcoded value `"change-this-in-production"` and is not used by the token logic. If you strengthen auth, implement real HMAC signing or switch to JWT.
+- `BETTER_AUTH_SECRET` must be set via `wrangler secret put BETTER_AUTH_SECRET` — do **not** commit secrets.
+- `SESSION_SECRET` in `wrangler.toml` is a leftover from the old legacy auth system and is **no longer consumed** by any code. It can be removed from `wrangler.toml` if desired.
 
 ## Game Mechanics
 
@@ -140,7 +147,7 @@ All quiz data lives in `src/content/*.ts` as statically exported typed arrays. E
 ### `wrangler.toml`
 ```toml
 name = "the-language-dojo"
-main = "src/index.ts"
+main = "src/index.tsx"
 compatibility_date = "2024-04-29"
 
 [[d1_databases]]
@@ -148,12 +155,17 @@ binding = "DB"
 database_name = "language-dojo-db"
 database_id = "a4750795-88e2-4616-92bd-6ea3c8ff9887"
 
+send_email = [
+  { name = "SEND_EMAIL" }
+]
+
 [vars]
-SESSION_SECRET = "change-this-in-production"
+BETTER_AUTH_URL = "https://the-language-dojo.pages.dev"
 ```
 
 - `DB` is the D1 binding injected into `c.env.DB` at runtime.
-- `SESSION_SECRET` is injected into `c.env.SESSION_SECRET` but is **not currently consumed** by the auth code.
+- `BETTER_AUTH_URL` is the public URL of the app (used by better-auth for callbacks).
+- `BETTER_AUTH_SECRET` should be set via `wrangler secret put BETTER_AUTH_SECRET`.
 - `send_email` binding is configured in `wrangler.toml`. All emails send from `hey@jamespares.me`.
 
 ### `drizzle.config.ts`
@@ -167,13 +179,12 @@ Styles are defined in two places (they should be kept in sync):
 1. `src/css.ts` — exported string served at the `/style.css` endpoint.
 2. `public/style.css` — static file (appears to be a copy).
 
-The design is a dark-themed card UI using CSS custom properties (`:root` variables). There is no CSS build step — it is plain hand-written CSS.
+The design is a light-themed card UI using CSS custom properties (`:root` variables). Accent colour is blue (`#2563eb`). Auth inputs and primary buttons use pill shapes (`border-radius: 9999px`). There is no CSS build step — it is plain hand-written CSS.
 
 ## Things to Be Aware Of
 
 - **No tests:** There is no test suite. If you add one, Jest/Vitest with `miniflare` or `wrangler` test environments are common choices for Workers projects.
 - **No linting/formatting:** ESLint and Prettier are not configured.
-- **Session secret unused:** As noted above, the `SESSION_SECRET` env var exists but the auth token logic does not use it.
-- **Duplicate CSS:** `src/css.ts` and `public/style.css` contain the same styles. The app serves `src/css.ts` at runtime (`/style.css` route in `src/index.ts`).
+- **Duplicate CSS:** `src/css.ts` and `public/style.css` contain the same styles. The app serves `src/css.ts` at runtime (`/style.css` route in `src/index.tsx`).
 - **Hardcoded D1 database ID:** The `database_id` in `wrangler.toml` is specific to the developer's Cloudflare account. New contributors will need to create their own D1 database and update the ID.
 - **Mistake review threshold:** The review mode filters items where `reviewCount < 2`. Changing this threshold requires updating both `src/lib/game.ts` (`getMistakeItemIds`) and any UI copy.

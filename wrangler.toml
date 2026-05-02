@@ -12,7 +12,7 @@ send_email = [
 ]
 
 [vars]
-SESSION_SECRET = "change-this-in-production"
-BETTER_AUTH_URL = "https://the-language-dojo.pages.dev"
+BETTER_AUTH_URL = "https://thelanguagedojo.com"
 
-# BETTER_AUTH_SECRET should be set via: wrangler secret put BETTER_AUTH_SECRET
+# BETTER_AUTH_SECRET must be set via: wrangler secret put BETTER_AUTH_SECRET
+# For local dev, place it in .dev.vars
