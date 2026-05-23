@@ -726,8 +726,220 @@ main.container {
   text-decoration: underline;
 }
 
-/* Landing Page */
-.landing-hero {
+  /* Coming Soon / Test Prep Hero */
+  .test-hero {
+    text-align: center;
+    padding: 4rem 1rem 2rem;
+  }
+
+  .test-hero h1 {
+    font-family: var(--font-heading);
+    font-size: 2.6rem;
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 1rem;
+    color: var(--base-text);
+  }
+
+  .test-hero .accent {
+    color: var(--accent);
+  }
+
+  .test-hero .tagline {
+    font-family: var(--font-accent);
+    font-size: 1.6rem;
+    color: var(--base-text-secondary);
+    margin-bottom: 1.5rem;
+  }
+
+  .test-hero .subtitle {
+    font-size: 1.1rem;
+    color: var(--base-text-secondary);
+    max-width: 560px;
+    margin: 0 auto 2rem;
+  }
+
+  .coming-badge {
+    display: inline-block;
+    padding: 0.4rem 1rem;
+    border-radius: 9999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    background: var(--accent-bg);
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--accent-light);
+  }
+
+  .exam-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    max-width: 800px;
+    margin: 0 auto 2rem;
+  }
+
+  .exam-card {
+    background: var(--base-surface);
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--base-border);
+    text-align: center;
+    box-shadow: var(--shadow);
+  }
+
+  .exam-card .exam-icon {
+    font-size: 2.2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .exam-card h3 {
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .exam-card p {
+    color: var(--base-text-secondary);
+    font-size: 0.85rem;
+  }
+
+  .waitlist-cta {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .waitlist-cta .btn {
+    border-radius: 9999px;
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+  }
+
+  .waitlist-note {
+    color: var(--base-text-muted);
+    font-size: 0.85rem;
+    margin-top: 0.75rem;
+  }
+
+  .how-it-works {
+    padding: 2rem 0;
+  }
+
+  .how-it-works h2 {
+    text-align: center;
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .features-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .feature-pill {
+    background: var(--base-surface);
+    padding: 1.25rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--base-border);
+    text-align: center;
+    box-shadow: var(--shadow);
+  }
+
+  .feature-pill .feature-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .feature-pill h3 {
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .feature-pill p {
+    color: var(--base-text-secondary);
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+
+  .early-access {
+    padding: 2rem 0;
+    text-align: center;
+  }
+
+  .early-access h2 {
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+  }
+
+  .early-access p {
+    color: var(--base-text-secondary);
+    margin-bottom: 1.5rem;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .social-proof {
+    padding: 2rem 0;
+    text-align: center;
+  }
+
+  .social-proof .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1.5rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .stat-item h3 {
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
+    color: var(--accent);
+    margin-bottom: 0.25rem;
+  }
+
+  .stat-item p {
+    color: var(--base-text-secondary);
+    font-size: 0.9rem;
+  }
+
+  .guarantee-box {
+    background: var(--accent-bg);
+    border: 1px solid var(--accent-light);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    text-align: center;
+    max-width: 600px;
+    margin: 2rem auto;
+  }
+
+  .guarantee-box h3 {
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: var(--accent-dark);
+  }
+
+  .guarantee-box p {
+    color: var(--base-text-secondary);
+    font-size: 0.95rem;
+  }
   text-align: center;
   padding: 4rem 1rem 3rem;
 }
